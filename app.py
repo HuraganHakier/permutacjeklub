@@ -21,7 +21,6 @@ def init_db():
                     bar_prawo TEXT,
                     parkiet_lewo TEXT,
                     parkiet_prawo TEXT,
-                    poprawna TEXT,
                     trafione INTEGER
                 )
             """)
@@ -32,7 +31,6 @@ def index():
     liczba_perm = 0
     error = None
     komunikat = ""
-    poprawna = ""
     trafione = False
     potwierdzenie = False
     miejsca = {k: "" for k in [
@@ -44,20 +42,15 @@ def index():
             miejsca[key] = request.form.get(key, "")
 
         cyfry = ''.join(miejsca.values())
-        poprawna = request.form.get("poprawna", "")
         brak_poprawnej = request.form.get("brakpoprawnej") == "on"
-        zatwierdz = request.form.get("zatwierdz") == "1"
 
-        if zatwierdz:
 
             if len(cyfry) != 6 or not cyfry.isdigit():
                 error = "Wprowadź dokładnie 6 cyfr – po jednej w każdym miejscu."
-            elif not brak_poprawnej and (len(poprawna) != 6 or not poprawna.isdigit()):
                 error = "Poprawna permutacja musi mieć dokładnie 6 cyfr."
     
         elif "clear" in request.form:
             return render_template("index.html", wynik=[], liczba_perm=0, error=None,
-                                   miejsca={k:"" for k in miejsca}, poprawna="", trafione=False,
                                    historia=fetch_history(), komunikat="", potwierdzenie=False, licznik=policz_napady())
 
         if "clearhistory" in request.form:
@@ -69,31 +62,25 @@ def index():
             else:
                 komunikat = "Błędne hasło do usunięcia historii ❌"
 
-        elif zatwierdz:
             if len(cyfry) != 6 or not cyfry.isdigit():
                 error = "Wprowadź dokładnie 6 cyfr – po jednej w każdym miejscu."
-            elif not brak_poprawnej and (len(poprawna) != 6 or not poprawna.isdigit()):
                 error = "Poprawna permutacja musi mieć dokładnie 6 cyfr."
             else:
                 if not brak_poprawnej:
                     perms = sorted(set(permutations(cyfry)))
                     wynik = [''.join(p) for p in perms]
                     liczba_perm = len(wynik)
-                    trafione = poprawna in wynik
                 else:
-                    poprawna = None
                     trafione = False
 
                 if not is_duplicate(cyfry):
                     with sqlite3.connect(DB_FILE) as conn:
                         conn.execute("""
-                            INSERT INTO historia (czas, drzwi_wejscie, nad_drzwiami, bar_lewo, bar_prawo, parkiet_lewo, parkiet_prawo, poprawna, trafione)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """, (datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                               miejsca["drzwi_wejscie"], miejsca["nad_drzwiami"],
                               miejsca["bar_lewo"], miejsca["bar_prawo"],
                               miejsca["parkiet_lewo"], miejsca["parkiet_prawo"],
-                              poprawna, int(trafione)))
                         potwierdzenie = True
                 else:
                     komunikat = "❗ Ten napad już został zapisany w ciągu ostatnich kilku minut."
@@ -107,14 +94,12 @@ def index():
                 error = "Wprowadź dokładnie 6 cyfr – po jednej w każdym miejscu."
 
     return render_template("index.html", wynik=wynik, liczba_perm=liczba_perm, error=error,
-                           miejsca=miejsca, poprawna=poprawna,
                            trafione=trafione, komunikat=komunikat,
                            historia=fetch_history(), potwierdzenie=potwierdzenie, licznik=policz_napady())
 
 def fetch_history():
     with sqlite3.connect(DB_FILE) as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT czas, drzwi_wejscie || nad_drzwiami || bar_lewo || bar_prawo || parkiet_lewo || parkiet_prawo AS cyfry, poprawna, trafione, id FROM historia ORDER BY id DESC LIMIT 10")
         return cursor.fetchall()
 
 def is_duplicate(cyfry):
@@ -141,3 +126,18 @@ if __name__ == "__main__":
     init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
+
+@app.route("/eksportuj")
+def eksportuj():
+    from flask import Response, request
+    from itertools import permutations
+    miejsca = ["drzwi_wejscie", "nad_drzwiami", "bar_lewo", "bar_prawo", "parkiet_lewo", "parkiet_prawo"]
+    params = [request.args.get(m, "") for m in miejsca]
+    if not all(len(x) == 1 and x.isdigit() for x in params):
+        return "Błędne dane wejściowe", 400
+    wejscie = ''.join(params)
+    perms = sorted(set([''.join(p) for p in permutations(wejscie)]))
+    txt = "\n".join(perms)
+    return Response(txt, mimetype="text/plain",
+                    headers={"Content-Disposition":f"attachment;filename=permutacje_{wejscie}.txt"})

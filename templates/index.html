@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Kiepek cwel</title>
+    <title>Permutacje GTA5 RP</title>
     <link rel="stylesheet" href="/static/style.css">
     <style>#historiaSekcja { display: none; }</style>
 </head>
@@ -12,7 +12,7 @@
         🧮 Zapisane napady: <strong>{{ licznik }}</strong>
     </div>
 
-    <h1>Generator Permutacji Napad Na Klub</h1>
+    <h1>GTA5 RP – Generator Permutacji</h1>
     <form method="POST" class="cyfry-form">
         {% for key, label in {
             'drzwi_wejscie':'1. Drzwi Wejście',
@@ -34,12 +34,27 @@
             <label style="margin-top:10px;">
                 <input type="checkbox" name="brakpoprawnej"> Poprawna permutacja nie została znaleziona
             </label>
-            <button type="submit" name="zatwierdz" value="1" onclick="return potwierdzDodanie()">✅ Zatwierdź permutację</button>
+            
         </div>
 
         <button type="submit">Generuj permutacje</button>
         <button type="submit" name="clear" value="1" formnovalidate>🧹 Wyczyść</button>
-    </form>
+    
+<br><br>
+<h3>📤 Eksport permutacji:</h3>
+<p>Po wpisaniu 6 cyfr w pola wyżej kliknij tutaj, aby pobrać wszystkie permutacje:<br>
+<a id="exportLink" href="#" onclick="generateExportLink()">📥 Pobierz permutacje</a></p>
+
+<script>
+function generateExportLink() {
+    const ids = ["drzwi_wejscie", "nad_drzwiami", "bar_lewo", "bar_prawo", "parkiet_lewo", "parkiet_prawo"];
+    const params = ids.map(id => id + '=' + (document.getElementsByName(id)[0]?.value || ''));
+    const link = '/eksportuj?' + params.join('&');
+    document.getElementById("exportLink").href = link;
+}
+</script>
+
+</form>
 
     {% if error %}
         <p class="error">{{ error }}</p>
@@ -70,7 +85,22 @@
     <form method="POST" style="display:inline;">
         <input type="hidden" name="usun" value="{{ h[4] }}">
         <button type="submit" class="usun-btn" title="Usuń">🗑️</button>
-    </form>
+    
+<br><br>
+<h3>📤 Eksport permutacji:</h3>
+<p>Po wpisaniu 6 cyfr w pola wyżej kliknij tutaj, aby pobrać wszystkie permutacje:<br>
+<a id="exportLink" href="#" onclick="generateExportLink()">📥 Pobierz permutacje</a></p>
+
+<script>
+function generateExportLink() {
+    const ids = ["drzwi_wejscie", "nad_drzwiami", "bar_lewo", "bar_prawo", "parkiet_lewo", "parkiet_prawo"];
+    const params = ids.map(id => id + '=' + (document.getElementsByName(id)[0]?.value || ''));
+    const link = '/eksportuj?' + params.join('&');
+    document.getElementById("exportLink").href = link;
+}
+</script>
+
+</form>
     <strong>{{ h[0] }}</strong> – <code>{{ h[1] }}</code>,
                     poprawna: <code>{{ h[2] or '-' }}</code>
                     {% if h[3] %}<span style="color:lightgreen;">✔️</span>{% else %}<span style="color:red;">❌</span>{% endif %}
@@ -80,7 +110,22 @@
         <form method="POST" class="clearhist-form">
             <input type="password" name="clearpassword" placeholder="hasło do czyszczenia" required>
             <button type="submit" name="clearhistory" value="1">🗑️ Wyczyść historię</button>
-        </form>
+        
+<br><br>
+<h3>📤 Eksport permutacji:</h3>
+<p>Po wpisaniu 6 cyfr w pola wyżej kliknij tutaj, aby pobrać wszystkie permutacje:<br>
+<a id="exportLink" href="#" onclick="generateExportLink()">📥 Pobierz permutacje</a></p>
+
+<script>
+function generateExportLink() {
+    const ids = ["drzwi_wejscie", "nad_drzwiami", "bar_lewo", "bar_prawo", "parkiet_lewo", "parkiet_prawo"];
+    const params = ids.map(id => id + '=' + (document.getElementsByName(id)[0]?.value || ''));
+    const link = '/eksportuj?' + params.join('&');
+    document.getElementById("exportLink").href = link;
+}
+</script>
+
+</form>
         {% endif %}
     </div>
 </div>
