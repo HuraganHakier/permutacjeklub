@@ -2,23 +2,21 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Permutacje 6 cyfr</title>
+    <title>Permutacje GTA5 RP</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Generator Permutacji 6 Cyfr</h1>
-        <form method="POST">
-            <input type="text" name="cyfry" maxlength="6" placeholder="np. 123456" value="{{ cyfry }}" required>
-            <button type="submit">Generuj</button>
+        <h1>GTA5 RP – Generator Permutacji z Kartek</h1>
+        <form method="POST" class="cyfry-form">
+            {% for i in range(6) %}
+                <div class="cyfra-blok">
+                    <label>Cyfra {{ i+1 }}:</label>
+                    <input type="text" name="cyfra{{ i }}" maxlength="1" pattern="[0-9]" value="{{ cyfry_input[i] }}" required>
+                </div>
+            {% endfor %}
+            <button type="submit">Generuj permutacje</button>
         </form>
-
-        <div class="actions">
-            <button type="button" onclick="kopiuj()">📋 Kopiuj wszystko</button>
-            <button type="button" onclick="pobierz()">⬇️ Pobierz wyniki</button>
-        </div>
-
-        <div id="historia" class="historia-box"></div>
 
         {% if error %}
             <p class="error">{{ error }}</p>
@@ -28,48 +26,10 @@
             <h2>Znaleziono {{ liczba_perm }} permutacji:</h2>
             <div class="wynik">
                 {% for perm in wynik %}
-                    <span>{{ perm }}</span>
+                    <div class="perm">{{ perm }}</div>
                 {% endfor %}
             </div>
         {% endif %}
     </div>
-
-<script>
-function kopiuj() {
-    const text = document.querySelector(".wynik")?.innerText || "";
-    navigator.clipboard.writeText(text).then(() => {
-        alert("Skopiowano do schowka!");
-    });
-}
-
-function pobierz() {
-    const tekst = document.querySelector(".wynik")?.innerText || "";
-    const blob = new Blob([tekst], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.download = "permutacje.txt";
-    link.href = URL.createObjectURL(blob);
-    link.click();
-}
-
-window.onload = function () {
-    let historia = JSON.parse(localStorage.getItem("historia")) || [];
-    const lista = document.getElementById("historia");
-
-    historia.forEach(item => {
-        let btn = document.createElement("button");
-        btn.textContent = item;
-        btn.onclick = () => document.querySelector("input[name='cyfry']").value = item;
-        lista.appendChild(btn);
-    });
-
-    document.querySelector("form").onsubmit = function () {
-        const val = document.querySelector("input[name='cyfry']").value;
-        if (!historia.includes(val)) {
-            historia.unshift(val);
-            localStorage.setItem("historia", JSON.stringify(historia.slice(0, 10)));
-        }
-    };
-};
-</script>
 </body>
 </html>

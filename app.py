@@ -8,20 +8,24 @@ def index():
     wynik = []
     liczba_perm = 0
     error = None
-    cyfry = ""
+    cyfry_input = ["", "", "", "", "", ""]
 
     if request.method == "POST":
-        cyfry = request.form.get("cyfry")
+        cyfry_input = [request.form.get(f"cyfra{i}", "") for i in range(6)]
+        cyfry = ''.join(cyfry_input)
         if len(cyfry) != 6 or not cyfry.isdigit():
-            error = "Wprowadź dokładnie 6 cyfr."
+            error = "Wprowadź dokładnie 6 cyfr (po jednej w każdym polu)."
         else:
             perms = sorted(set(permutations(cyfry)))
             wynik = [''.join(p) for p in perms]
-            liczba_perm = len(wynik)
-            with open("historia.txt", "a") as f:
-                f.write(f"{cyfry} → {liczba_perm} permutacji\n")
 
-    return render_template("index.html", wynik=wynik, liczba_perm=liczba_perm, error=error, cyfry=cyfry)
+            pierwsza_cyfra = cyfry_input[0]
+            if pierwsza_cyfra:
+                wynik.sort(key=lambda x: (x[0] != pierwsza_cyfra, x))
+
+            liczba_perm = len(wynik)
+
+    return render_template("index.html", wynik=wynik, liczba_perm=liczba_perm, error=error, cyfry_input=cyfry_input)
 
 if __name__ == "__main__":
     import os
