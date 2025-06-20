@@ -114,7 +114,7 @@ def index():
 def fetch_history():
     with sqlite3.connect(DB_FILE) as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT czas, drzwi_wejscie || nad_drzwiami || bar_lewo || bar_prawo || parkiet_lewo || parkiet_prawo AS cyfry, poprawna, trafione FROM historia ORDER BY id DESC LIMIT 10")
+        cursor.execute("SELECT czas, drzwi_wejscie || nad_drzwiami || bar_lewo || bar_prawo || parkiet_lewo || parkiet_prawo AS cyfry, poprawna, trafione, id FROM historia ORDER BY id DESC LIMIT 10")
         return cursor.fetchall()
 
 def is_duplicate(cyfry):

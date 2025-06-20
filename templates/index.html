@@ -67,7 +67,11 @@
         <div class="historia-box">
             {% for h in historia %}
                 <div class="hist-entry">
-                    <strong>{{ h[0] }}</strong> – <code>{{ h[1] }}</code>,
+    <form method="POST" style="display:inline;">
+        <input type="hidden" name="usun" value="{{ h[4] }}">
+        <button type="submit" class="usun-btn" title="Usuń">🗑️</button>
+    </form>
+    <strong>{{ h[0] }}</strong> – <code>{{ h[1] }}</code>,
                     poprawna: <code>{{ h[2] or '-' }}</code>
                     {% if h[3] %}<span style="color:lightgreen;">✔️</span>{% else %}<span style="color:red;">❌</span>{% endif %}
                 </div>
