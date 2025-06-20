@@ -1,11 +1,10 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request
 from itertools import permutations
 import sqlite3
 import os
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-app.secret_key = "tajnehaslo"
 DB_FILE = "baza.db"
 HISTORY_PASSWORD = "napad123"
 
@@ -41,14 +40,11 @@ def index():
     ]}
 
     if request.method == "POST":
-        if request.form.get("login_historia") == "1" and request.form.get("historia_haslo") == "napad123":
-            session["historia_odblokowana"] = True
-            komunikat = "Historia została odblokowana ✅"
-
+        
     return render_template("index.html", wynik=wynik, liczba_perm=liczba_perm, error=error,
                            miejsca=miejsca, poprawna=poprawna,
                            trafione=trafione, komunikat=komunikat,
-                           historia=fetch_history() if session.get("historia_odblokowana") else [], potwierdzenie=potwierdzenie, licznik=policz_napady())
+                           historia=fetch_history(), potwierdzenie=potwierdzenie, licznik=policz_napady())
 
 def fetch_history():
     with sqlite3.connect(DB_FILE) as conn:
