@@ -12,7 +12,7 @@ def init_db():
     if not os.path.exists(DB_FILE):
         with sqlite3.connect(DB_FILE) as conn:
             conn.execute("""
-                CREATE TABLE historia (
+                CREATE TABLE IF NOT EXISTS historia (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     czas TEXT,
                     drzwi_wejscie TEXT,
@@ -93,13 +93,15 @@ def index():
                 liczba_perm = len(wynik)
 
     return render_template("index.html", wynik=wynik, liczba_perm=liczba_perm, error=error,
-                           miejsca=miejsca, poprawna=poprawna, trafione=trafione,
+                           miejsca=miejsca if request.method == "POST" else {k:"" for k in miejsca}, 
+                           poprawna=poprawna if request.method == "POST" else "",
+                           trafione=trafione,
                            historia=fetch_history(), komunikat=komunikat)
 
 def fetch_history():
     with sqlite3.connect(DB_FILE) as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT czas, drzwi_wejscie, nad_drzwiami, bar_lewo, bar_prawo, parkiet_lewo, parkiet_prawo, poprawna, trafione FROM historia ORDER BY id DESC LIMIT 10")
+        cursor.execute("SELECT czas, drzwi_wejscie || nad_drzwiami || bar_lewo || bar_prawo || parkiet_lewo || parkiet_prawo AS cyfry, poprawna, trafione FROM historia ORDER BY id DESC LIMIT 10")
         return cursor.fetchall()
 
 if __name__ == "__main__":
