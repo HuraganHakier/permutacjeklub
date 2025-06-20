@@ -4,53 +4,68 @@
     <meta charset="UTF-8">
     <title>Permutacje GTA5 RP</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        #historiaSekcja {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body class="dark">
-    <div class="container">
-        <h1>GTA5 RP – Generator Permutacji</h1>
-        <form method="POST" class="cyfry-form">
-            {% for i in range(6) %}
-                <div class="cyfra-blok">
-                    <label>Cyfra {{ i+1 }}:</label>
-                    <input type="text" name="cyfra{{ i }}" maxlength="1" pattern="[0-9]" value="{{ cyfry_input[i] }}" required>
-                </div>
+<div class="container">
+    <h1>GTA5 RP – Generator Permutacji</h1>
+    <form method="POST" class="cyfry-form">
+        {% for key, label in {
+            'drzwi_wejscie':'1. Drzwi Wejście',
+            'nad_drzwiami':'2. Nad drzwiami',
+            'bar_lewo':'3. Przy barze max lewo',
+            'bar_prawo':'4. Przy barze max prawo',
+            'parkiet_lewo':'5. Parkiet lewo',
+            'parkiet_prawo':'6. Parkiet prawo'
+        }.items() %}
+        <div class="cyfra-blok">
+            <label>{{ label }}</label>
+            <input type="text" name="{{ key }}" maxlength="1" pattern="[0-9]" value="{{ miejsca[key] }}" required>
+        </div>
+        {% endfor %}
+        <div class="poprawna-blok">
+            <label>Poprawna permutacja:</label>
+            <input type="text" name="poprawna" maxlength="6" pattern="[0-9]{6}" value="{{ poprawna }}">
+            <button type="submit" name="zatwierdz" value="1">✅ Zatwierdź permutację</button>
+        </div>
+        <button type="submit">Generuj permutacje</button>
+        <button type="submit" name="clear" value="1">🧹 Wyczyść</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    {% if komunikat %}
+        <p class="info">{{ komunikat }}</p>
+    {% endif %}
+
+    {% if wynik %}
+        <h2>Znaleziono {{ liczba_perm }} permutacji:</h2>
+        <div class="wynik">
+            {% for perm in wynik %}
+                <div class="perm">{{ perm }}</div>
             {% endfor %}
-            <div class="poprawna-blok">
-                <label>Poprawna permutacja (jeśli znasz):</label>
-                <input type="text" name="poprawna" maxlength="6" pattern="[0-9]{6}" value="{{ poprawna }}">
-            </div>
-            <button type="submit">Generuj permutacje</button>
-            <button type="submit" name="clear" value="1">🧹 Wyczyść</button>
-        </form>
+        </div>
+    {% endif %}
 
-        {% if error %}
-            <p class="error">{{ error }}</p>
-        {% endif %}
-        {% if komunikat %}
-            <p class="info">{{ komunikat }}</p>
-        {% endif %}
-
-        {% if wynik %}
-            <h2>Znaleziono {{ liczba_perm }} permutacji:</h2>
-            {% if poprawna %}
-                <p><strong>Poprawna permutacja:</strong> {{ poprawna }} – {% if trafione %}<span style="color:lightgreen;">✔️ znaleziona</span>{% else %}<span style="color:red;">❌ brak</span>{% endif %}</p>
-            {% endif %}
-            <button onclick="pobierz()">📄 Pobierz TXT</button>
-            <div class="wynik">
-                {% for perm in wynik %}
-                    <div class="perm">{{ perm }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        {% if historia %}
+    {% if historia %}
+        <div id="histUnlock">
+            <input type="password" id="histHaslo" placeholder="hasło do historii">
+            <button onclick="pokazHistorie()">🔓 Pokaż historię</button>
+        </div>
+        <div id="historiaSekcja">
             <h2>📜 Historia ostatnich prób:</h2>
             <div class="historia-box">
                 {% for h in historia %}
                     <div class="hist-entry">
-                        <strong>{{ h[0] }}</strong> – cyfry: <code>{{ h[1] }}</code>,
-                        poprawna: <code>{{ h[2] or '-' }}</code>,
-                        wynik: {% if h[3] %}<span style="color:lightgreen;">✔️</span>{% else %}<span style="color:red;">❌</span>{% endif %}
+                        <strong>{{ h[0] }}</strong> – <code>{{ h[1] }}</code>,
+                        poprawna: <code>{{ h[2] or '-' }}</code>
+                        {% if h[3] %}<span style="color:lightgreen;">✔️</span>{% else %}<span style="color:red;">❌</span>{% endif %}
                     </div>
                 {% endfor %}
             </div>
@@ -58,18 +73,19 @@
                 <input type="password" name="clearpassword" placeholder="hasło do czyszczenia" required>
                 <button type="submit" name="clearhistory" value="1">🗑️ Wyczyść historię</button>
             </form>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
+</div>
 
 <script>
-function pobierz() {
-    const cyfry = [...document.querySelectorAll('.cyfra-blok input')].map(input => input.value).join('');
-    const tekst = document.querySelector(".wynik")?.innerText || "";
-    const blob = new Blob([tekst], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.download = "permutacje_" + cyfry + ".txt";
-    link.href = URL.createObjectURL(blob);
-    link.click();
+function pokazHistorie() {
+    const haslo = document.getElementById("histHaslo").value;
+    if (haslo === "napad123") {
+        document.getElementById("historiaSekcja").style.display = "block";
+        document.getElementById("histUnlock").style.display = "none";
+    } else {
+        alert("Błędne hasło!");
+    }
 }
 </script>
 </body>

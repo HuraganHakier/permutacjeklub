@@ -12,13 +12,11 @@ body {
     background: #222;
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 0 15px rgba(255,255,255,0.05);
 }
 .cyfry-form {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    margin-bottom: 20px;
 }
 .cyfra-blok {
     display: flex;
@@ -27,10 +25,10 @@ body {
     margin: 5px;
 }
 .cyfra-blok input, .poprawna-blok input {
-    font-size: 1.5em;
-    width: 60px;
+    font-size: 1.6em;
+    width: 80px;
     text-align: center;
-    padding: 5px;
+    padding: 8px;
     background: #333;
     color: #eee;
     border: 1px solid #555;
@@ -40,6 +38,9 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
+    margin: 20px 0 10px 0;
+}
+.poprawna-blok button {
     margin-top: 10px;
 }
 button {
@@ -51,9 +52,6 @@ button {
     border-radius: 8px;
     cursor: pointer;
     margin: 5px;
-}
-button:hover {
-    background-color: #388E3C;
 }
 .wynik {
     margin-top: 20px;
