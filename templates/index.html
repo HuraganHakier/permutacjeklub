@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
     <title>Permutacje GTA5 RP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <h1>Generator permutacji – GTA5 RP</h1>
-
 <form method="POST">
     {% for key, label in {
         'drzwi_wejscie':'1. Drzwi Wejście',
@@ -27,9 +26,6 @@
 
 {% if error %}
     <p style="color:red;">{{ error }}</p>
-{% endif %}
-{% if komunikat %}
-    <p>{{ komunikat }}</p>
 {% endif %}
 {% if wynik %}
     <h3>Permutacje:</h3>
