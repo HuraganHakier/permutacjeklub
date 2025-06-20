@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <title>Permutacje GTA5 RP</title>
     <link rel="stylesheet" href="/static/style.css">
-    <style>
-        #historiaSekcja {
-            display: none;
-            margin-top: 20px;
-        }
-    </style>
+    <style>#historiaSekcja { display: none; }</style>
 </head>
 <body class="dark">
 <div class="container">
+    <div style="text-align:right; font-size: 1.1em; margin-bottom:10px;">
+        🧮 Zapisane napady: <strong>{{ licznik }}</strong>
+    </div>
+
     <h1>GTA5 RP – Generator Permutacji</h1>
     <form method="POST" class="cyfry-form">
         {% for key, label in {
@@ -28,11 +27,16 @@
             <input type="text" name="{{ key }}" maxlength="1" pattern="[0-9]" value="{{ miejsca[key] }}" required>
         </div>
         {% endfor %}
+
         <div class="poprawna-blok">
             <label>Poprawna permutacja:</label>
             <input type="text" name="poprawna" maxlength="6" pattern="[0-9]{6}" value="{{ poprawna }}">
-            <button type="submit" name="zatwierdz" value="1">✅ Zatwierdź permutację</button>
+            <label style="margin-top:10px;">
+                <input type="checkbox" name="brakpoprawnej"> Poprawna permutacja nie została znaleziona
+            </label>
+            <button type="submit" name="zatwierdz" value="1" onclick="return potwierdzDodanie()">✅ Zatwierdź permutację</button>
         </div>
+
         <button type="submit">Generuj permutacje</button>
         <button type="submit" name="clear" value="1" formnovalidate>🧹 Wyczyść</button>
     </form>
@@ -51,27 +55,30 @@
                 <div class="perm">{{ perm }}</div>
             {% endfor %}
         </div>
-    {% endif %}<div id="histUnlock">
-            <input type="password" id="histHaslo" placeholder="hasło do historii">
-            <button onclick="pokazHistorie()">🔓 Pokaż historię</button>
-        </div>
-        <div id="historiaSekcja">
-            <h2>📜 Historia ostatnich prób:</h2>
-            <div class="historia-box">
-                {% for h in historia %}
-                    <div class="hist-entry">
-                        <strong>{{ h[0] }}</strong> – <code>{{ h[1] }}</code>,
-                        poprawna: <code>{{ h[2] or '-' }}</code>
-                        {% if h[3] %}<span style="color:lightgreen;">✔️</span>{% else %}<span style="color:red;">❌</span>{% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-            <form method="POST" class="clearhist-form">
-                <input type="password" name="clearpassword" placeholder="hasło do czyszczenia" required>
-                <button type="submit" name="clearhistory" value="1">🗑️ Wyczyść historię</button>
-            </form>
-        </div>
     {% endif %}
+
+    <div id="histUnlock">
+        <input type="password" id="histHaslo" placeholder="hasło do historii">
+        <button onclick="pokazHistorie()">🔓 Pokaż historię</button>
+    </div>
+    <div id="historiaSekcja">
+        {% if historia %}
+        <h2>📜 Historia ostatnich prób:</h2>
+        <div class="historia-box">
+            {% for h in historia %}
+                <div class="hist-entry">
+                    <strong>{{ h[0] }}</strong> – <code>{{ h[1] }}</code>,
+                    poprawna: <code>{{ h[2] or '-' }}</code>
+                    {% if h[3] %}<span style="color:lightgreen;">✔️</span>{% else %}<span style="color:red;">❌</span>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <form method="POST" class="clearhist-form">
+            <input type="password" name="clearpassword" placeholder="hasło do czyszczenia" required>
+            <button type="submit" name="clearhistory" value="1">🗑️ Wyczyść historię</button>
+        </form>
+        {% endif %}
+    </div>
 </div>
 
 <script>
@@ -83,6 +90,9 @@ function pokazHistorie() {
     } else {
         alert("Błędne hasło!");
     }
+}
+function potwierdzDodanie() {
+    return confirm("Czy na pewno chcesz zapisać ten napad do historii?");
 }
 </script>
 </body>
