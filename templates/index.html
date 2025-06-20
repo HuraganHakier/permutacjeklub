@@ -61,7 +61,7 @@
         <input type="password" id="histHaslo" placeholder="hasło do historii">
         <button onclick="pokazHistorie()">🔓 Pokaż historię</button>
     </div>
-    <div id="historiaSekcja">
+    <div id="historiaSekcja">{% if historia %}
         <form method="POST" style="margin-bottom:10px;">
             <button type="submit" name="logout_historia" value="1">🚪 Wyloguj historię</button>
         </form>
