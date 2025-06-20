@@ -1,0 +1,49 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    text-align: center;
+    padding: 20px;
+}
+.container {
+    width: 90%;
+    max-width: 700px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+input[type="text"] {
+    padding: 10px;
+    font-size: 1.2em;
+    width: 200px;
+    margin: 10px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #45a049;
+}
+.wynik {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f0f0f0;
+    margin-top: 20px;
+    padding: 10px;
+    text-align: left;
+}
+.wynik span {
+    display: inline-block;
+    margin: 2px 6px;
+    font-family: monospace;
+}
+.error {
+    color: red;
+}

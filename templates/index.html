@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Permutacje 6 cyfr</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Generator Permutacji 6 Cyfr</h1>
+        <form method="POST">
+            <input type="text" name="cyfry" maxlength="6" placeholder="np. 123456" required>
+            <button type="submit">Generuj</button>
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        {% if wynik %}
+            <h2>Znaleziono {{ liczba_perm }} permutacji:</h2>
+            <div class="wynik">
+                {% for perm in wynik %}
+                    <span>{{ perm }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
