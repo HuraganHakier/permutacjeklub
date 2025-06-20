@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 from itertools import permutations
 import sqlite3
 import os
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+app.secret_key = "tajnehaslo"
 DB_FILE = "baza.db"
 HISTORY_PASSWORD = "napad123"
 
@@ -58,7 +59,7 @@ def index():
         elif "clear" in request.form:
             return render_template("index.html", wynik=[], liczba_perm=0, error=None,
                                    miejsca={k:"" for k in miejsca}, poprawna="", trafione=False,
-                                   historia=fetch_history(), komunikat="", potwierdzenie=False, licznik=policz_napady())
+                                   historia=fetch_history() if session.get("historia_odblokowana") else [], komunikat="", potwierdzenie=False, licznik=policz_napady())
 
         if "clearhistory" in request.form:
             podane_haslo = request.form.get("clearpassword", "")
@@ -79,7 +80,7 @@ def index():
                     perms = sorted(set(permutations(cyfry)))
                     wynik = [''.join(p) for p in perms]
                     liczba_perm = len(wynik)
-                    trafione = poprawna in wynik
+                    trafione = poprawna in ["".join(p) for p in permutations(cyfry)]
                 else:
                     poprawna = None
                     trafione = False
@@ -109,7 +110,7 @@ def index():
     return render_template("index.html", wynik=wynik, liczba_perm=liczba_perm, error=error,
                            miejsca=miejsca, poprawna=poprawna,
                            trafione=trafione, komunikat=komunikat,
-                           historia=fetch_history(), potwierdzenie=potwierdzenie, licznik=policz_napady())
+                           historia=fetch_history() if session.get("historia_odblokowana") else [], potwierdzenie=potwierdzenie, licznik=policz_napady())
 
 def fetch_history():
     with sqlite3.connect(DB_FILE) as conn:
