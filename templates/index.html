@@ -1,119 +1,50 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
     <title>Permutacje GTA5 RP</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <style>#historiaSekcja { display: none; }</style>
 </head>
-<body class="dark">
-<div class="container">
-    <div style="text-align:right; font-size: 1.1em; margin-bottom:10px;">
-        🧮 Zapisane napady: <strong>{{ licznik }}</strong>
-    </div>
+<body>
+<h1>Generator permutacji – GTA5 RP</h1>
 
-    <h1>GTA5 RP – Generator Permutacji</h1>
-    <form method="POST" class="cyfry-form">
-        {% for key, label in {
-            'drzwi_wejscie':'1. Drzwi Wejście',
-            'nad_drzwiami':'2. Nad drzwiami',
-            'bar_lewo':'3. Przy barze max lewo',
-            'bar_prawo':'4. Przy barze max prawo',
-            'parkiet_lewo':'5. Parkiet lewo',
-            'parkiet_prawo':'6. Parkiet prawo'
-        }.items() %}
-        <div class="cyfra-blok">
-            <label>{{ label }}</label>
-            <input type="text" name="{{ key }}" autocomplete="off" maxlength="1" pattern="[0-9]" value="{{ miejsca[key] }}" required>
-        </div>
-        {% endfor %}
+<form method="POST">
+    {% for key, label in {
+        'drzwi_wejscie':'1. Drzwi Wejście',
+        'nad_drzwiami':'2. Nad drzwiami',
+        'bar_lewo':'3. Przy barze max lewo',
+        'bar_prawo':'4. Przy barze max prawo',
+        'parkiet_lewo':'5. Parkiet lewo',
+        'parkiet_prawo':'6. Parkiet prawo'
+    }.items() %}
+        <label>{{ label }}: <input type="text" name="{{ key }}" maxlength="1" value="{{ miejsca[key] }}" required></label><br>
+    {% endfor %}
+    <br>
+    <label>Poprawna permutacja: <input type="text" name="poprawna" maxlength="6" value="{{ poprawna }}"></label><br><br>
+    <button type="submit" name="zatwierdz" value="1">Zatwierdź permutację</button>
+    <button type="submit" name="clear" value="1">Wyczyść</button>
+</form>
 
-        <div class="poprawna-blok">
-            <label>Poprawna permutacja:</label>
-            <input type="text" name="poprawna" autocomplete="off" maxlength="6" pattern="[0-9]{6}" value="{{ poprawna }}">
-            <br>        <label style="margin-top:10px;">
-                <input type="checkbox" name="brakpoprawnej"> Poprawna permutacja nie została znaleziona
-            </label>
-            <button type="submit" name="zatwierdz" value="1" onclick="return potwierdzDodanie()">✅ Zatwierdź permutację</button>
-        </div>
+{% if error %}
+    <p style="color:red;">{{ error }}</p>
+{% endif %}
+{% if komunikat %}
+    <p>{{ komunikat }}</p>
+{% endif %}
+{% if wynik %}
+    <h3>Permutacje:</h3>
+    <ul>
+    {% for perm in wynik %}
+        <li>{{ perm }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
 
-        <button type="submit">Generuj permutacje</button>
-        <button type="submit" name="clear" value="1" formnovalidate>🧹 Wyczyść</button>
-    </form>
-
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
-    {% if komunikat %}
-        <p class="info">{{ komunikat }}</p>
-    {% endif %}
-
-    {% if wynik %}
-        <h2>Znaleziono {{ liczba_perm }} permutacji:</h2>
-        <div class="wynik">
-            {% for perm in wynik %}
-                <div class="perm">{{ perm }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <div id="histUnlock">
-        <input type="password" id="histHaslo" placeholder="hasło do historii">
-        <button onclick="pokazHistorie()">🔓 Pokaż historię</button>
-    </div>
-    <div id="historiaSekcja">{% if historia %}
-        <form method="POST" style="margin-bottom:10px;">
-            <button type="submit" name="logout_historia" value="1">🚪 Wyloguj historię</button>
-        </form>
-        {% if historia %}
-        <h2>📜 Historia ostatnich prób:</h2>
-        <div class="historia-box">
-            {% for h in historia %}
-                <div class="hist-entry">
-    <form method="POST" style="display:inline;">
-        <input type="hidden" name="usun" value="{{ h[4] }}">
-        <button type="submit" class="usun-btn" title="Usuń">🗑️</button>
-    </form>
-    <strong>{{ h[0] }}</strong> – <code>{{ h[1] }}</code>,
-                    poprawna: <code>{{ h[2] or '-' }}</code>
-                    {% if h[3] %}<span style="color:lightgreen;">✔️</span>{% else %}<span style="color:red;">❌</span>{% endif %}
-                </div>
-            {% endfor %}
-        </div>
-        <form method="POST" class="clearhist-form">
-            <input type="password" name="clearpassword" placeholder="hasło do czyszczenia" required>
-            <button type="submit" name="clearhistory" value="1">🗑️ Wyczyść historię</button>
-        </form>
-        {% endif %}
-    </div>
-</div>
-
-<script>
-function pokazHistorie() {
-    if (localStorage.getItem("historia") === "odblokowana") {
-        localStorage.setItem("historia", "odblokowana");
-        document.getElementById("historiaSekcja").style.display = "block";
-        document.getElementById("histUnlock").style.display = "none";
-        return;
-    }
-    const haslo = document.getElementById("histHaslo").value;
-    if (haslo === "napad123") {
-        localStorage.setItem("historia", "odblokowana");
-        document.getElementById("historiaSekcja").style.display = "block";
-        document.getElementById("histUnlock").style.display = "none";
-    } else {
-        alert("Błędne hasło!");
-    }
-}
-function potwierdzDodanie() {
-    return confirm("Czy na pewno chcesz zapisać ten napad do historii?");
-}
-window.addEventListener("DOMContentLoaded", function() {
-    if (localStorage.getItem("historia") === "odblokowana") {
-        document.getElementById("historiaSekcja").style.display = "block";
-        document.getElementById("histUnlock").style.display = "none";
-    }
-});
-</script>
+<h2>📜 Historia ostatnich prób:</h2>
+<ul>
+{% for h in historia %}
+    <li>{{ h[0] }} – {{ h[1] }}, poprawna: {{ h[2] or '-' }} {% if h[3] %}✔️{% else %}❌{% endif %}</li>
+{% endfor %}
+</ul>
 </body>
 </html>
