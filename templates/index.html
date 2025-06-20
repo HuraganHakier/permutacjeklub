@@ -83,8 +83,15 @@
 
 <script>
 function pokazHistorie() {
+    if (localStorage.getItem("historia") === "odblokowana") {
+        localStorage.setItem("historia", "odblokowana");
+        document.getElementById("historiaSekcja").style.display = "block";
+        document.getElementById("histUnlock").style.display = "none";
+        return;
+    }
     const haslo = document.getElementById("histHaslo").value;
     if (haslo === "napad123") {
+        localStorage.setItem("historia", "odblokowana");
         document.getElementById("historiaSekcja").style.display = "block";
         document.getElementById("histUnlock").style.display = "none";
     } else {
@@ -94,6 +101,12 @@ function pokazHistorie() {
 function potwierdzDodanie() {
     return confirm("Czy na pewno chcesz zapisać ten napad do historii?");
 }
+window.addEventListener("DOMContentLoaded", function() {
+    if (localStorage.getItem("historia") === "odblokowana") {
+        document.getElementById("historiaSekcja").style.display = "block";
+        document.getElementById("histUnlock").style.display = "none";
+    }
+});
 </script>
 </body>
 </html>
