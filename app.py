@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request
 from itertools import permutations
 import sqlite3
 import os
 from datetime import datetime
 
 app = Flask(__name__)
-DB_FILE = "/tmp/baza.db"
+DB_FILE = "baza.db"
 
 def init_db():
     if not os.path.exists(DB_FILE):
@@ -91,4 +91,4 @@ def fetch_history():
 
 if __name__ == "__main__":
     init_db()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+    app.run(debug=True)
