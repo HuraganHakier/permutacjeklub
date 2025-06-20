@@ -8,6 +8,7 @@ def index():
     wynik = []
     liczba_perm = 0
     error = None
+    cyfry = ""
 
     if request.method == "POST":
         cyfry = request.form.get("cyfry")
@@ -17,8 +18,10 @@ def index():
             perms = sorted(set(permutations(cyfry)))
             wynik = [''.join(p) for p in perms]
             liczba_perm = len(wynik)
+            with open("historia.txt", "a") as f:
+                f.write(f"{cyfry} → {liczba_perm} permutacji\n")
 
-    return render_template("index.html", wynik=wynik, liczba_perm=liczba_perm, error=error)
+    return render_template("index.html", wynik=wynik, liczba_perm=liczba_perm, error=error, cyfry=cyfry)
 
 if __name__ == "__main__":
     app.run(debug=True)

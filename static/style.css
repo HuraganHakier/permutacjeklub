@@ -6,7 +6,7 @@ body {
 }
 .container {
     width: 90%;
-    max-width: 700px;
+    max-width: 800px;
     margin: auto;
     background: white;
     padding: 20px;
@@ -22,6 +22,7 @@ input[type="text"] {
 button {
     padding: 10px 20px;
     font-size: 1em;
+    margin: 5px;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -46,4 +47,13 @@ button:hover {
 }
 .error {
     color: red;
+}
+.actions {
+    margin: 10px 0;
+}
+.historia-box button {
+    margin: 2px;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    background-color: #2196F3;
 }
