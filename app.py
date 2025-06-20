@@ -44,6 +44,8 @@ def index():
     if request.form.get("login_historia") == "1" and request.form.get("historia_haslo") == "napad123":
         session["historia_odblokowana"] = True
         komunikat = "Historia została odblokowana ✅"
+        session["historia_odblokowana"] = True
+        komunikat = "Historia została odblokowana ✅"
                     komunikat = "Historia została odblokowana ✅"
         
         zatwierdz = request.form.get("zatwierdz") == "1"
