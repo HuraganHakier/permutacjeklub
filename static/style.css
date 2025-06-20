@@ -3,6 +3,11 @@ body {
     background-color: #f5f5f5;
     text-align: center;
     padding: 20px;
+    transition: background 0.3s, color 0.3s;
+}
+body.dark {
+    background-color: #111;
+    color: #eee;
 }
 .container {
     width: 90%;
@@ -12,6 +17,9 @@ body {
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+body.dark .container {
+    background: #222;
 }
 .cyfry-form {
     display: flex;
@@ -46,7 +54,7 @@ button {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    margin: 10px;
+    margin: 5px;
 }
 button:hover {
     background-color: #1976D2;
@@ -60,6 +68,9 @@ button:hover {
     background: #eee;
     border-radius: 8px;
 }
+body.dark .wynik {
+    background: #333;
+}
 .perm {
     font-family: monospace;
     font-size: 1.2em;
@@ -68,4 +79,7 @@ button:hover {
 .error {
     color: red;
     font-weight: bold;
+}
+.extras {
+    margin: 10px;
 }
