@@ -48,7 +48,14 @@ def index():
         brak_poprawnej = request.form.get("brakpoprawnej") == "on"
         zatwierdz = request.form.get("zatwierdz") == "1"
 
-        if "clear" in request.form:
+        if zatwierdz:
+
+            if len(cyfry) != 6 or not cyfry.isdigit():
+                error = "Wprowadź dokładnie 6 cyfr – po jednej w każdym miejscu."
+            elif not brak_poprawnej and (len(poprawna) != 6 or not poprawna.isdigit()):
+                error = "Poprawna permutacja musi mieć dokładnie 6 cyfr."
+    
+        elif "clear" in request.form:
             return render_template("index.html", wynik=[], liczba_perm=0, error=None,
                                    miejsca={k:"" for k in miejsca}, poprawna="", trafione=False,
                                    historia=fetch_history(), komunikat="", potwierdzenie=False, licznik=policz_napady())
