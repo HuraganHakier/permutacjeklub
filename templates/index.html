@@ -15,6 +15,10 @@
                     <input type="text" name="cyfra{{ i }}" maxlength="1" pattern="[0-9]" value="{{ cyfry_input[i] }}" required>
                 </div>
             {% endfor %}
+            <div class="poprawna-blok">
+                <label>Poprawna permutacja (jeśli znasz):</label>
+                <input type="text" name="poprawna" maxlength="6" pattern="[0-9]{6}" value="{{ poprawna }}">
+            </div>
             <button type="submit">Generuj permutacje</button>
         </form>
 
@@ -24,6 +28,10 @@
 
         {% if wynik %}
             <h2>Znaleziono {{ liczba_perm }} permutacji:</h2>
+            {% if poprawna %}
+                <p><strong>Poprawna permutacja:</strong> {{ poprawna }} – {% if trafione %}<span style="color:green;">✔️ znaleziona</span>{% else %}<span style="color:red;">❌ brak</span>{% endif %}</p>
+            {% endif %}
+            <button onclick="pobierz()">📄 Pobierz wyniki jako TXT</button>
             <div class="wynik">
                 {% for perm in wynik %}
                     <div class="perm">{{ perm }}</div>
@@ -31,5 +39,17 @@
             </div>
         {% endif %}
     </div>
+
+<script>
+function pobierz() {
+    const cyfry = [...document.querySelectorAll('.cyfra-blok input')].map(input => input.value).join('');
+    const tekst = document.querySelector(".wynik").innerText;
+    const blob = new Blob([tekst], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.download = "permutacje_" + cyfry + ".txt";
+    link.href = URL.createObjectURL(blob);
+    link.click();
+}
+</script>
 </body>
 </html>
