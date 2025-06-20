@@ -13,7 +13,7 @@
 </head>
 <body class="dark">
 <div class="container">
-    <h1>Generator Permutacji na Klub</h1>
+    <h1>GTA5 RP – Generator Permutacji</h1>
     <form method="POST" class="cyfry-form">
         {% for key, label in {
             'drzwi_wejscie':'1. Drzwi Wejście',
@@ -51,10 +51,7 @@
                 <div class="perm">{{ perm }}</div>
             {% endfor %}
         </div>
-    {% endif %}
-
-    {% if historia %}
-        <div id="histUnlock">
+    {% endif %}<div id="histUnlock">
             <input type="password" id="histHaslo" placeholder="hasło do historii">
             <button onclick="pokazHistorie()">🔓 Pokaż historię</button>
         </div>
