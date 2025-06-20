@@ -46,7 +46,7 @@ def index():
         cyfry = ''.join(miejsca.values())
         poprawna = request.form.get("poprawna", "")
         brak_poprawnej = request.form.get("brakpoprawnej") == "on"
-        zatwierdz = "zatwierdz" in request.form
+        zatwierdz = request.form.get("zatwierdz") == "1"
 
         if "clear" in request.form:
             return render_template("index.html", wynik=[], liczba_perm=0, error=None,
