@@ -41,14 +41,14 @@ def index():
     ]}
 
     if request.method == "POST":
+        zatwierdz = request.form.get("zatwierdz") == "1"
         for key in miejsca:
             miejsca[key] = request.form.get(key, "")
 
         cyfry = ''.join(miejsca.values())
         poprawna = request.form.get("poprawna", "")
         brak_poprawnej = request.form.get("brakpoprawnej") == "on"
-        zatwierdz = request.form.get("zatwierdz") == "1"
-
+        
         if zatwierdz:
 
             if len(cyfry) != 6 or not cyfry.isdigit():

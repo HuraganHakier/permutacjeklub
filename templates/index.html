@@ -24,13 +24,13 @@
         }.items() %}
         <div class="cyfra-blok">
             <label>{{ label }}</label>
-            <input type="text" name="{{ key }}" maxlength="1" pattern="[0-9]" value="{{ miejsca[key] }}" required>
+            <input type="text" name="{{ key }}" autocomplete="off" maxlength="1" pattern="[0-9]" value="{{ miejsca[key] }}" required>
         </div>
         {% endfor %}
 
         <div class="poprawna-blok">
             <label>Poprawna permutacja:</label>
-            <input type="text" name="poprawna" maxlength="6" pattern="[0-9]{6}" value="{{ poprawna }}">
+            <input type="text" name="poprawna" autocomplete="off" maxlength="6" pattern="[0-9]{6}" value="{{ poprawna }}">
             <label style="margin-top:10px;">
                 <input type="checkbox" name="brakpoprawnej"> Poprawna permutacja nie została znaleziona
             </label>
@@ -62,6 +62,9 @@
         <button onclick="pokazHistorie()">🔓 Pokaż historię</button>
     </div>
     <div id="historiaSekcja">
+        <form method="POST" style="margin-bottom:10px;">
+            <button type="submit" name="logout_historia" value="1">🚪 Wyloguj historię</button>
+        </form>
         {% if historia %}
         <h2>📜 Historia ostatnich prób:</h2>
         <div class="historia-box">
