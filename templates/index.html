@@ -5,8 +5,8 @@
     <title>Permutacje GTA5 RP</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
-    <div class="container" id="app">
+<body class="dark">
+    <div class="container">
         <h1>GTA5 RP – Generator Permutacji</h1>
         <form method="POST" class="cyfry-form">
             {% for i in range(6) %}
@@ -23,25 +23,41 @@
             <button type="submit" name="clear" value="1">🧹 Wyczyść</button>
         </form>
 
-        <div class="extras">
-            <button onclick="pobierz()">📄 Pobierz TXT</button>
-            <button onclick="toggleDarkMode()">🌗 Tryb ciemny</button>
-        </div>
-
         {% if error %}
             <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if komunikat %}
+            <p class="info">{{ komunikat }}</p>
         {% endif %}
 
         {% if wynik %}
             <h2>Znaleziono {{ liczba_perm }} permutacji:</h2>
             {% if poprawna %}
-                <p><strong>Poprawna permutacja:</strong> {{ poprawna }} – {% if trafione %}<span style="color:green;">✔️ znaleziona</span>{% else %}<span style="color:red;">❌ brak</span>{% endif %}</p>
+                <p><strong>Poprawna permutacja:</strong> {{ poprawna }} – {% if trafione %}<span style="color:lightgreen;">✔️ znaleziona</span>{% else %}<span style="color:red;">❌ brak</span>{% endif %}</p>
             {% endif %}
+            <button onclick="pobierz()">📄 Pobierz TXT</button>
             <div class="wynik">
                 {% for perm in wynik %}
                     <div class="perm">{{ perm }}</div>
                 {% endfor %}
             </div>
+        {% endif %}
+
+        {% if historia %}
+            <h2>📜 Historia ostatnich prób:</h2>
+            <div class="historia-box">
+                {% for h in historia %}
+                    <div class="hist-entry">
+                        <strong>{{ h[0] }}</strong> – cyfry: <code>{{ h[1] }}</code>,
+                        poprawna: <code>{{ h[2] or '-' }}</code>,
+                        wynik: {% if h[3] %}<span style="color:lightgreen;">✔️</span>{% else %}<span style="color:red;">❌</span>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <form method="POST" class="clearhist-form">
+                <input type="password" name="clearpassword" placeholder="hasło do czyszczenia" required>
+                <button type="submit" name="clearhistory" value="1">🗑️ Wyczyść historię</button>
+            </form>
         {% endif %}
     </div>
 
@@ -54,10 +70,6 @@ function pobierz() {
     link.download = "permutacje_" + cyfry + ".txt";
     link.href = URL.createObjectURL(blob);
     link.click();
-}
-
-function toggleDarkMode() {
-    document.body.classList.toggle("dark");
 }
 </script>
 </body>
